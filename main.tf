@@ -24,3 +24,24 @@ module "aks" {
 
   depends_on = [module.vnet]
 }
+
+# Module to deploy Container Registry
+module "container-registry" {
+  source              = "./modules/Container_registry"
+  environmentname     = var.resource_group_name
+  environmentlocation = var.location
+    retention_policy = {
+    days    = 10
+    enabled = true
+  }
+  enable_content_trust = true
+}
+
+# Module for Role assignment
+module "role_assignment" {
+  source   = "./modules/Container_registry"
+  principalid = azurerm_kubernetes_cluster.example.kubelet_identity[0].object_id
+  # scope_id             = local.rg_id
+  # principal_ids        = each.value
+}
+
