@@ -18,11 +18,12 @@ module "aks" {
   source              = "./modules/kubernetes"
   environmentname     = var.resource_group_name
   environmentlocation = var.location
+  containername       = module.container-registry.cotainerregid
   #   client_id                        = "your-service-principal-client-appid"
   #   client_secret                    = "your-service-principal-client-password"
 #   prefix = "${var.resource_group_name}-prefix"
 
-  depends_on = [module.vnet]
+  depends_on = [module.container-registry]
 }
 
 # Module to deploy Container Registry
@@ -30,18 +31,14 @@ module "container-registry" {
   source              = "./modules/Container_registry"
   environmentname     = var.resource_group_name
   environmentlocation = var.location
-    retention_policy = {
-    days    = 10
-    enabled = true
-  }
-  enable_content_trust = true
 }
 
 # Module for Role assignment
-module "role_assignment" {
-  source   = "./modules/Container_registry"
-  principalid = azurerm_kubernetes_cluster.example.kubelet_identity[0].object_id
-  # scope_id             = local.rg_id
-  # principal_ids        = each.value
-}
+# module "role_assignment" {
+#   source   = "./modules/kubernetes"
+#   environmentname     = var.resource_group_name
+#   environmentlocation = var.location
+#   containername       = module.container-registry.cotainerregid
+#   depends_on = [module.aks]
+# }
 

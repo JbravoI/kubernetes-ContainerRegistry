@@ -6,7 +6,6 @@ variable "environmentname" {
   description = "filled in module"
 }
 
-# variable "prefix" {
-#   description = "azure location to deploy resources"
-#   default     = "kube"
-# }
+variable "containername" {
+  description = "azure location to deploy resources"
+}
